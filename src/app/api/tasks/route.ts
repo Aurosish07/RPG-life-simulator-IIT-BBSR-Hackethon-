@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { calculateTaskReward } from '@/lib/rpg'
+import { calculateTaskReward, AttributeType, Difficulty } from '@/lib/rpg'
 
 export async function GET() {
   try {
@@ -45,8 +45,8 @@ export async function POST(req: Request) {
     })
 
     const { xp, gold } = calculateTaskReward(
-      (difficulty || 'MEDIUM') as any,
-      attribute as any,
+      (difficulty || 'MEDIUM') as Difficulty,
+      attribute as AttributeType,
       character?.currentStreak || 0
     )
 
@@ -55,8 +55,8 @@ export async function POST(req: Request) {
         userId: session.user.id,
         title,
         description,
-        attribute,
-        difficulty: difficulty || 'MEDIUM',
+        attribute: attribute as AttributeType,
+        difficulty: (difficulty || 'MEDIUM') as Difficulty,
         isRecurring: isRecurring || false,
         recurrenceRule,
         dueDate: dueDate ? new Date(dueDate) : null,

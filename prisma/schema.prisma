@@ -32,12 +32,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?
-  access_token      String?
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -83,7 +83,7 @@ model Character {
   lastActiveDate DateTime?
 
   equippedTheme  String   @default("default")
-  badges         String   @default("[]")
+  badges         String[] @default([])
 
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -97,8 +97,8 @@ model Task {
   title         String
   description   String?
 
-  attribute     String
-  difficulty    String        @default("MEDIUM")
+  attribute     AttributeType
+  difficulty    Difficulty    @default(MEDIUM)
 
   isRecurring   Boolean       @default(false)
   recurrenceRule String?
@@ -130,11 +130,11 @@ model Item {
   id          String   @id @default(cuid())
   name        String
   description String
-  type        String
+  type        ItemType
   price       Int
   icon        String
-  effect      String?
-  rarity      String   @default("COMMON")
+  effect      Json?
+  rarity      Rarity   @default(COMMON)
   createdAt   DateTime @default(now())
 
   userItems   UserItem[]
@@ -150,4 +150,35 @@ model UserItem {
   purchasedAt  DateTime @default(now())
 
   @@unique([userId, itemId])
+}
+
+enum AttributeType {
+  STRENGTH
+  INTELLECT
+  AGILITY
+  VITALITY
+  CHARISMA
+  WISDOM
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+  EPIC
+}
+
+enum ItemType {
+  THEME
+  BADGE
+  CONSUMABLE
+  EQUIPMENT
+}
+
+enum Rarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
 }

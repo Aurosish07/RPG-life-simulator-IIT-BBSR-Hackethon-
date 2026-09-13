@@ -35,20 +35,20 @@ export async function POST(req: Request) {
 
     // Apply effect based on item type
     if (userItem.item.type === 'THEME') {
-      const effect = userItem.item.effect ? JSON.parse(userItem.item.effect) : null
+      const effect = userItem.item.effect as any
       if (effect?.theme) {
         updateData.equippedTheme = effect.theme
       }
     } else if (userItem.item.type === 'BADGE') {
-      const effect = userItem.item.effect ? JSON.parse(userItem.item.effect) : null
+      const effect = userItem.item.effect as any
       if (effect?.badge) {
         // Add badge to equipped badges array
         const character = await prisma.character.findUnique({
           where: { userId: session.user.id },
         })
-        const currentBadges = character?.badges ? JSON.parse(character.badges) : []
+        const currentBadges = character?.badges || []
         if (!currentBadges.includes(effect.badge)) {
-          updateData.badges = JSON.stringify([...currentBadges, effect.badge])
+          updateData.badges = [...currentBadges, effect.badge]
         }
       }
     }

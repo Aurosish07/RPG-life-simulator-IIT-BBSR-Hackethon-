@@ -61,7 +61,18 @@ export async function POST(
     const xpGainForAttribute = levelUp ? Math.floor(xpGained / 10) : Math.floor(xpGained / 20)
     attributeGains[task.attribute.toLowerCase()] = xpGainForAttribute
 
-    // Update character
+    // Update character - use proper attribute name for Prisma
+    const attributeMap: Record<string, string> = {
+      strength: 'strength',
+      intellect: 'intellect',
+      agility: 'agility',
+      vitality: 'vitality',
+      charisma: 'charisma',
+      wisdom: 'wisdom',
+    }
+
+    const attributeName = attributeMap[task.attribute.toLowerCase()]
+
     const updatedCharacter = await prisma.character.update({
       where: { userId: session.user.id },
       data: {
@@ -72,7 +83,7 @@ export async function POST(
         currentStreak: newStreak,
         longestStreak: Math.max(character.longestStreak, newStreak),
         lastActiveDate: today,
-        [task.attribute.toLowerCase()]: {
+        [attributeName]: {
           increment: xpGainForAttribute,
         },
       },

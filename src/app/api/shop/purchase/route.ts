@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
-const SHOP_ITEMS: Record<string, { name: string; description: string; type: string; price: number; icon: string; rarity: string; effect?: string }> = {
+const SHOP_ITEMS: Record<string, { name: string; description: string; type: string; price: number; icon: string; rarity: string; effect?: any }> = {
   'theme-fantasy': {
     name: 'Fantasy Realm',
     description: 'Transform your interface into a medieval fantasy world.',
@@ -11,7 +11,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 100,
     icon: '🏰',
     rarity: 'RARE',
-    effect: JSON.stringify({ theme: 'fantasy' }),
+    effect: { theme: 'fantasy' },
   },
   'theme-cyberpunk': {
     name: 'Neon City',
@@ -20,7 +20,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 100,
     icon: '🌃',
     rarity: 'RARE',
-    effect: JSON.stringify({ theme: 'cyberpunk' }),
+    effect: { theme: 'cyberpunk' },
   },
   'theme-lofi': {
     name: 'Cozy Study',
@@ -29,7 +29,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 80,
     icon: '☕',
     rarity: 'UNCOMMON',
-    effect: JSON.stringify({ theme: 'lofi' }),
+    effect: { theme: 'lofi' },
   },
   'streak-freeze': {
     name: 'Streak Freeze',
@@ -38,7 +38,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 50,
     icon: '🧊',
     rarity: 'UNCOMMON',
-    effect: JSON.stringify({ type: 'streakFreeze' }),
+    effect: { type: 'streakFreeze' },
   },
   'xp-boost': {
     name: 'XP Boost',
@@ -47,7 +47,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 75,
     icon: '⚡',
     rarity: 'RARE',
-    effect: JSON.stringify({ type: 'xpBoost', uses: 3 }),
+    effect: { type: 'xpBoost', uses: 3 },
   },
   'badge-warrior': {
     name: 'Warrior Badge',
@@ -56,7 +56,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 150,
     icon: '⚔️',
     rarity: 'EPIC',
-    effect: JSON.stringify({ badge: 'warrior' }),
+    effect: { badge: 'warrior' },
   },
   'badge-scholar': {
     name: 'Scholar Badge',
@@ -65,7 +65,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 150,
     icon: '📚',
     rarity: 'EPIC',
-    effect: JSON.stringify({ badge: 'scholar' }),
+    effect: { badge: 'scholar' },
   },
   'badge-legend': {
     name: 'Legendary Hero',
@@ -74,7 +74,7 @@ const SHOP_ITEMS: Record<string, { name: string; description: string; type: stri
     price: 500,
     icon: '👑',
     rarity: 'LEGENDARY',
-    effect: JSON.stringify({ badge: 'legend' }),
+    effect: { badge: 'legend' },
   },
 }
 
@@ -127,10 +127,10 @@ export async function POST(req: Request) {
           id: itemId,
           name: itemData.name,
           description: itemData.description,
-          type: itemData.type,
+          type: itemData.type as any,
           price: itemData.price,
           icon: itemData.icon,
-          rarity: itemData.rarity,
+          rarity: itemData.rarity as any,
           effect: itemData.effect || undefined,
         },
       })
