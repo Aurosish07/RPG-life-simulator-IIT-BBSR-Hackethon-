@@ -21,11 +21,10 @@ export async function POST(req: Request) {
       )
     }
 
-    // Check DATABASE_URL is set
     if (!process.env.DATABASE_URL) {
       console.error('DATABASE_URL is not set')
       return NextResponse.json(
-        { error: 'Database configuration error' },
+        { error: 'Database configuration error: DATABASE_URL not set' },
         { status: 500 }
       )
     }
@@ -69,9 +68,12 @@ export async function POST(req: Request) {
       { status: 201 }
     )
   } catch (error: any) {
-    console.error('Registration error:', error?.message || error)
+    console.error('Registration error:', error?.message, error?.stack)
     return NextResponse.json(
-      { error: error?.message || 'Internal server error' },
+      {
+        error: 'Registration failed',
+        detail: error?.message || 'Unknown error',
+      },
       { status: 500 }
     )
   }
