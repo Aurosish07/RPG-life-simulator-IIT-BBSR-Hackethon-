@@ -73,6 +73,7 @@ export async function POST(req: Request) {
       {
         error: 'Registration failed',
         detail: error?.message || 'Unknown error',
+        dbUrl: process.env.DATABASE_URL ? 'present' : 'MISSING',
       },
       { status: 500 }
     )
