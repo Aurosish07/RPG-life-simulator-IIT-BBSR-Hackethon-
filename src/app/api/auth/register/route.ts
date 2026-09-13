@@ -4,7 +4,8 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json()
+    const body = await req.json()
+    const { name, email, password } = body
 
     if (!name || !email || !password) {
       return NextResponse.json(
@@ -17,6 +18,15 @@ export async function POST(req: Request) {
       return NextResponse.json(
         { error: 'Password must be at least 6 characters' },
         { status: 400 }
+      )
+    }
+
+    // Check DATABASE_URL is set
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL is not set')
+      return NextResponse.json(
+        { error: 'Database configuration error' },
+        { status: 500 }
       )
     }
 
@@ -58,10 +68,10 @@ export async function POST(req: Request) {
       { message: 'Account created successfully', user: userWithoutPassword },
       { status: 201 }
     )
-  } catch (error) {
-    console.error('Registration error:', error)
+  } catch (error: any) {
+    console.error('Registration error:', error?.message || error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error?.message || 'Internal server error' },
       { status: 500 }
     )
   }
